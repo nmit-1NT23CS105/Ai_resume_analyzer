@@ -1,0 +1,19 @@
+We are hiring a Senior NLP Engineer to build intelligent resume screening products for recruiting teams.
+
+Overview
+You will help design advanced candidate matching systems that analyze resumes, compare them with job descriptions, and generate decision-ready insights.
+
+Responsibilities
+- Develop services using Python and FastAPI
+- Design REST APIs for resume parsing and candidate analysis
+- Build NLP pipelines for skill extraction and job matching
+- Implement cosine similarity, TF-IDF features, and ranking logic
+- Work with SQL databases, Docker, Git, and AWS
+- Collaborate with product stakeholders to improve ATS quality and recruiter workflows
+
+Requirements
+5+ years of experience building production-grade NLP or ML products
+Python, NLP, Machine Learning, FastAPI, REST API, SQL, Docker, Git, AWS, Scikit-learn, Testing, Resume Parsing, Candidate Screening
+
+Preferred
+Experience with LLMs, LangChain, OpenAI API, or resume screening products

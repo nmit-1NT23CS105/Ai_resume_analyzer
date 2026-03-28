@@ -1,0 +1,26 @@
+Riya Sharma
+riya.sharma@example.com
++91 98765 43210
+
+Summary
+Python and NLP engineer with 3+ years of experience building resume screening tools, backend APIs, and intelligent matching workflows.
+
+Skills
+Python, NLP, Machine Learning, FastAPI, REST API, SQL, Pandas, NumPy, Scikit-learn, Git, Docker, AWS, Regex, TF-IDF, Cosine Similarity, Testing, Resume Parsing, Candidate Screening
+
+Experience
+AI Engineer | Talent Intelligence Lab | 2021 - Present
+- Developed an AI Resume Analyzer using Python and natural language processing to parse resumes, extract skills, and compare profiles with job descriptions.
+- Implemented similarity scoring with TF-IDF features and cosine similarity logic, improving match quality by 28%.
+- Built FastAPI backend services and REST APIs that processed 10k+ resume comparisons for internal screening demos.
+- Added Docker-based deployment workflows, SQL-backed reporting, and automated testing to improve reliability.
+
+Projects
+- Built a candidate screening pipeline with Python, Scikit-learn, and resume parsing rules to highlight the top 20% best-fit applicants.
+- Created recruiter dashboards with job fit summaries, missing skill analysis, and ATS-friendly recommendation cues.
+
+Education
+B.Tech in Computer Science, 2021
+
+Certifications
+AWS Cloud Practitioner
