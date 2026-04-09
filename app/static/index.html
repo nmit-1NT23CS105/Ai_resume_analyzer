@@ -17,24 +17,21 @@
     <div class="page-shell">
       <header class="hero deck-card reveal" data-tilt>
         <div class="hero-copy">
-          <p class="eyebrow">Advanced Resume Intelligence</p>
+          <p class="eyebrow">Resume AI</p>
           <h1>AI Resume Analyzer</h1>
-          <p class="lede">
-            A smarter resume matching cockpit with ATS diagnostics, section intelligence, role
-            inference, seniority calibration, and immersive 3D-style UI feedback.
-          </p>
+          <p class="lede">Upload. Match. Improve.</p>
 
           <div class="feature-pills">
-            <span class="feature-pill">ATS Readiness</span>
-            <span class="feature-pill">Role Inference</span>
-            <span class="feature-pill">Section Diagnostics</span>
-            <span class="feature-pill">Category Fit Matrix</span>
+            <span class="feature-pill">ATS</span>
+            <span class="feature-pill">Role</span>
+            <span class="feature-pill">Skills</span>
+            <span class="feature-pill">Gaps</span>
           </div>
 
           <div class="hero-actions">
             <button id="load-sample" type="button" class="button button-primary">Load Sample</button>
             <button id="reset-button" type="button" class="button button-secondary">Reset</button>
-            <a class="button button-ghost" href="/docs" target="_blank" rel="noreferrer">Open API Docs</a>
+            <a class="button button-ghost" href="/docs" target="_blank" rel="noreferrer">API</a>
           </div>
         </div>
 
@@ -44,22 +41,22 @@
             <div class="orbital-ring orbital-ring-mid"></div>
             <div class="orbital-ring orbital-ring-inner"></div>
             <div class="orbital-core">
-              <span class="orbital-label">Live Fit Signal</span>
+              <span class="orbital-label">Fit</span>
               <strong id="hero-score">0%</strong>
             </div>
           </div>
 
           <div class="hero-metrics">
             <article class="micro-card">
-              <span>Detected Role</span>
-              <strong id="hero-role">Awaiting analysis</strong>
+              <span>Role</span>
+              <strong id="hero-role">Waiting</strong>
             </article>
             <article class="micro-card">
               <span>Seniority</span>
-              <strong id="hero-seniority">Not inferred</strong>
+              <strong id="hero-seniority">N/A</strong>
             </article>
             <article class="micro-card">
-              <span>ATS Readiness</span>
+              <span>ATS</span>
               <strong id="hero-ats">0%</strong>
             </article>
           </div>
@@ -70,114 +67,111 @@
         <section class="deck-card control-panel reveal" data-tilt>
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">Input Deck</p>
-              <h2>Paste Content Or Upload Files</h2>
+              <p class="eyebrow">Input</p>
+              <h2>Add Resume + JD</h2>
             </div>
-            <p class="panel-note">
-              Upload `TXT`, `DOCX`, or text-based `PDF` files, or paste raw content directly into the
-              analyzer cockpit.
-            </p>
+            <p class="panel-note">Paste text or upload TXT/DOCX/PDF.</p>
           </div>
 
           <div class="quick-mode-grid">
             <article class="mode-card">
-              <span>Analyzer Mode</span>
-              <strong>Resume vs Job Match</strong>
+              <span>Mode</span>
+              <strong>Match</strong>
             </article>
             <article class="mode-card">
-              <span>Insight Depth</span>
-              <strong>ATS + Role + Skills</strong>
+              <span>Insights</span>
+              <strong>ATS + Skills</strong>
             </article>
             <article class="mode-card">
-              <span>Upload Engine</span>
-              <strong>TXT / DOCX / PDF</strong>
+              <span>Files</span>
+              <strong>TXT/DOCX/PDF</strong>
             </article>
           </div>
 
           <div class="upload-grid">
             <label class="upload-card" for="resume-file">
-              <span>Resume File</span>
+              <span>Resume</span>
               <input
                 id="resume-file"
                 type="file"
                 accept=".txt,.docx,.pdf,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               />
-              <small id="resume-file-name">Supports TXT, DOCX, and PDF</small>
+              <small id="resume-file-name">TXT/DOCX/PDF</small>
             </label>
 
             <label class="upload-card" for="job-file">
-              <span>Job Description File</span>
+              <span>Job</span>
               <input
                 id="job-file"
                 type="file"
                 accept=".txt,.docx,.pdf,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               />
-              <small id="job-file-name">Upload a JD file to auto-fill the target role text</small>
+              <small id="job-file-name">Upload JD</small>
             </label>
           </div>
 
           <div class="input-grid">
             <label class="input-card">
-              <span>Resume Text</span>
+              <span>Resume</span>
               <textarea
                 id="resume-text"
-                placeholder="Paste the full resume text here..."
+                placeholder="Paste resume..."
               ></textarea>
             </label>
 
             <label class="input-card">
-              <span>Job Description</span>
+              <span>Job</span>
               <textarea
                 id="job-description"
-                placeholder="Paste the target job description here..."
+                placeholder="Paste JD..."
               ></textarea>
             </label>
           </div>
 
           <div class="toolbar">
             <div class="toolbar-actions">
-              <button id="analyze-button" type="button" class="button button-primary">Analyze Match</button>
+              <button id="analyze-button" type="button" class="button button-primary">Analyze</button>
               <button id="extract-button" type="button" class="button button-secondary">
-                Extract Resume Profile
+                Extract
               </button>
               <button id="analyze-files-button" type="button" class="button button-ghost">
-                Analyze Uploaded Files
+                Analyze Files
               </button>
               <button id="copy-summary-button" type="button" class="button button-ghost">
-                Copy Recruiter Summary
+                Copy Summary
               </button>
             </div>
-            <p id="status" class="status" role="status" aria-live="polite">Ready for advanced analysis.</p>
+            <p id="status" class="status" role="status" aria-live="polite">Ready.</p>
           </div>
         </section>
 
         <section class="deck-card results-panel reveal" data-tilt>
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">Results Cockpit</p>
-              <h2>Advanced Fit Intelligence</h2>
+              <p class="eyebrow">Results</p>
+              <h2>Fit Report</h2>
             </div>
-            <span id="verdict-pill" class="verdict-pill">Awaiting input</span>
+            <span id="verdict-pill" class="verdict-pill">Waiting</span>
           </div>
 
           <div class="results-top-grid">
             <article class="overview-card elevated-card">
               <div class="section-headline">
                 <div>
-                  <p class="tiny-label">Executive Summary</p>
-                  <h3>Neural Match Console</h3>
+                  <p class="tiny-label">Summary</p>
+                  <h3>Match</h3>
                 </div>
                 <button id="copy-summary-inline" type="button" class="mini-button">Copy</button>
               </div>
               <p id="summary-text" class="summary-text">
-                Run an analysis to generate a recruiter-ready summary, ATS signal, and tailored next steps.
+                Run analysis.
               </p>
 
               <div class="ring-grid">
                 <article class="ring-card">
                   <div class="score-ring score-ring-primary" id="final-ring">
                     <div class="score-ring-inner">
-                      <span>Overall Fit</span>
+                      <span>Fit</span>
                       <strong id="final-score">0%</strong>
                     </div>
                   </div>
@@ -185,7 +179,7 @@
                 <article class="ring-card">
                   <div class="score-ring score-ring-secondary" id="skill-ring">
                     <div class="score-ring-inner">
-                      <span>Skill Fit</span>
+                      <span>Skills</span>
                       <strong id="skill-score">0%</strong>
                     </div>
                   </div>
@@ -193,7 +187,7 @@
                 <article class="ring-card">
                   <div class="score-ring score-ring-tertiary" id="ats-ring">
                     <div class="score-ring-inner">
-                      <span>ATS Ready</span>
+                      <span>ATS</span>
                       <strong id="ats-score">0%</strong>
                     </div>
                   </div>
@@ -201,7 +195,7 @@
                 <article class="ring-card">
                   <div class="score-ring score-ring-quaternary" id="keyword-ring">
                     <div class="score-ring-inner">
-                      <span>Keyword Sync</span>
+                      <span>Keywords</span>
                       <strong id="keyword-score">0%</strong>
                     </div>
                   </div>
@@ -212,35 +206,35 @@
             <article class="profile-card elevated-card">
               <div class="section-headline">
                 <div>
-                  <p class="tiny-label">Profile Lens</p>
-                  <h3>Role Alignment</h3>
+                  <p class="tiny-label">Profile</p>
+                  <h3>Role</h3>
                 </div>
               </div>
 
               <div class="profile-grid">
                 <div class="profile-stat">
-                  <span>Inferred Role</span>
-                  <strong id="profile-role">Not inferred</strong>
+                  <span>Role</span>
+                  <strong id="profile-role">N/A</strong>
                 </div>
                 <div class="profile-stat">
-                  <span>Resume Seniority</span>
-                  <strong id="profile-resume-seniority">Not inferred</strong>
+                  <span>Resume Level</span>
+                  <strong id="profile-resume-seniority">N/A</strong>
                 </div>
                 <div class="profile-stat">
-                  <span>Target Seniority</span>
-                  <strong id="profile-job-seniority">Not inferred</strong>
+                  <span>Job Level</span>
+                  <strong id="profile-job-seniority">N/A</strong>
                 </div>
                 <div class="profile-stat">
-                  <span>Experience</span>
-                  <strong id="profile-experience">Not inferred</strong>
+                  <span>Years</span>
+                  <strong id="profile-experience">N/A</strong>
                 </div>
                 <div class="profile-stat">
-                  <span>Required Years</span>
-                  <strong id="profile-required">Not specified</strong>
+                  <span>Required</span>
+                  <strong id="profile-required">N/A</strong>
                 </div>
                 <div class="profile-stat profile-stat-wide">
-                  <span>Experience Alignment</span>
-                  <strong id="profile-experience-label">No comparison yet</strong>
+                  <span>Fit Note</span>
+                  <strong id="profile-experience-label">N/A</strong>
                 </div>
               </div>
             </article>
@@ -249,28 +243,28 @@
           <div class="metric-tile-grid">
             <article class="metric-tile" id="similarity-tile">
               <div class="metric-tile-head">
-                <span>Semantic Similarity</span>
+                <span>Similarity</span>
                 <strong id="similarity-score">0%</strong>
               </div>
               <div class="metric-track"><span class="metric-fill" id="similarity-fill"></span></div>
             </article>
             <article class="metric-tile" id="section-tile">
               <div class="metric-tile-head">
-                <span>Section Coverage</span>
+                <span>Sections</span>
                 <strong id="section-score">0%</strong>
               </div>
               <div class="metric-track"><span class="metric-fill" id="section-fill"></span></div>
             </article>
             <article class="metric-tile" id="experience-tile">
               <div class="metric-tile-head">
-                <span>Experience Match</span>
+                <span>Experience</span>
                 <strong id="experience-score">0%</strong>
               </div>
               <div class="metric-track"><span class="metric-fill" id="experience-fill"></span></div>
             </article>
             <article class="metric-tile" id="ats-tile">
               <div class="metric-tile-head">
-                <span>ATS Readiness</span>
+                <span>ATS</span>
                 <strong id="ats-mini-score">0%</strong>
               </div>
               <div class="metric-track"><span class="metric-fill" id="ats-fill"></span></div>
@@ -281,33 +275,33 @@
             <article class="analysis-card">
               <div class="section-headline">
                 <div>
-                  <p class="tiny-label">Contact + Sections</p>
-                  <h3>Resume Structure</h3>
+                  <p class="tiny-label">Profile</p>
+                  <h3>Structure</h3>
                 </div>
               </div>
 
               <dl class="contact-grid">
                 <div>
                   <dt>Name</dt>
-                  <dd id="contact-name">Not detected</dd>
+                  <dd id="contact-name">N/A</dd>
                 </div>
                 <div>
                   <dt>Email</dt>
-                  <dd id="contact-email">Not detected</dd>
+                  <dd id="contact-email">N/A</dd>
                 </div>
                 <div>
                   <dt>Phone</dt>
-                  <dd id="contact-phone">Not detected</dd>
+                  <dd id="contact-phone">N/A</dd>
                 </div>
               </dl>
 
               <div class="list-cluster">
                 <div>
-                  <p class="subheading">Detected Resume Sections</p>
+                  <p class="subheading">Found</p>
                   <ul id="present-sections-list" class="tag-list"></ul>
                 </div>
                 <div>
-                  <p class="subheading">Missing Resume Sections</p>
+                  <p class="subheading">Missing</p>
                   <ul id="missing-sections-list" class="tag-list tag-list-warning"></ul>
                 </div>
               </div>
@@ -316,8 +310,8 @@
             <article class="analysis-card">
               <div class="section-headline">
                 <div>
-                  <p class="tiny-label">ATS Diagnostics</p>
-                  <h3>Screening Readiness</h3>
+                  <p class="tiny-label">ATS</p>
+                  <h3>Readiness</h3>
                 </div>
               </div>
 
@@ -336,8 +330,8 @@
             <article class="analysis-card wide-card">
               <div class="section-headline">
                 <div>
-                  <p class="tiny-label">Fit Matrix</p>
-                  <h3>Category Coverage</h3>
+                  <p class="tiny-label">Matrix</p>
+                  <h3>Categories</h3>
                 </div>
               </div>
               <div id="category-score-list" class="category-list"></div>
@@ -346,17 +340,17 @@
             <article class="analysis-card wide-card">
               <div class="section-headline">
                 <div>
-                  <p class="tiny-label">Skill Spectrum</p>
-                  <h3>Matched And Missing Signals</h3>
+                  <p class="tiny-label">Skills</p>
+                  <h3>Coverage</h3>
                 </div>
               </div>
               <div class="skill-columns">
                 <div>
-                  <p class="subheading">Resume Skills</p>
+                  <p class="subheading">Resume</p>
                   <ul id="resume-skills-list" class="tag-list"></ul>
                 </div>
                 <div>
-                  <p class="subheading">Target Skills</p>
+                  <p class="subheading">Job</p>
                   <ul id="job-skills-list" class="tag-list"></ul>
                 </div>
                 <div>
@@ -373,8 +367,8 @@
             <article class="analysis-card wide-card">
               <div class="section-headline">
                 <div>
-                  <p class="tiny-label">Recommendations Engine</p>
-                  <h3>Actionable Guidance</h3>
+                  <p class="tiny-label">Actions</p>
+                  <h3>Improve</h3>
                 </div>
               </div>
               <div class="recommendation-grid">
@@ -383,15 +377,15 @@
                   <ul id="strengths-list" class="detail-list"></ul>
                 </div>
                 <div>
-                  <p class="subheading">Recommendations</p>
+                  <p class="subheading">Fixes</p>
                   <ul id="recommendations-list" class="detail-list"></ul>
                 </div>
                 <div>
-                  <p class="subheading">Priority Actions</p>
+                  <p class="subheading">Priority</p>
                   <ul id="priority-list" class="detail-list detail-list-accent"></ul>
                 </div>
                 <div>
-                  <p class="subheading">Risk Flags</p>
+                  <p class="subheading">Risks</p>
                   <ul id="risk-list" class="detail-list detail-list-warning"></ul>
                 </div>
               </div>
@@ -400,21 +394,21 @@
             <article class="analysis-card wide-card">
               <div class="section-headline">
                 <div>
-                  <p class="tiny-label">Keyword Intel</p>
-                  <h3>Overlap And Target Language</h3>
+                  <p class="tiny-label">Keywords</p>
+                  <h3>Overlap</h3>
                 </div>
               </div>
               <div class="keyword-columns">
                 <div>
-                  <p class="subheading">Shared Keywords</p>
+                  <p class="subheading">Shared</p>
                   <ul id="overlap-list" class="tag-list"></ul>
                 </div>
                 <div>
-                  <p class="subheading">Resume Keywords</p>
+                  <p class="subheading">Resume</p>
                   <ul id="resume-keywords-list" class="tag-list tag-list-muted"></ul>
                 </div>
                 <div>
-                  <p class="subheading">Job Keywords</p>
+                  <p class="subheading">Job</p>
                   <ul id="job-keywords-list" class="tag-list tag-list-muted"></ul>
                 </div>
               </div>

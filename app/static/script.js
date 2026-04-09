@@ -109,7 +109,7 @@ function formatPercent(value) {
   return `${clampScore(value)}%`;
 }
 
-function formatYears(value, fallback = "Not specified") {
+function formatYears(value, fallback = "N/A") {
   if (value === null || value === undefined) {
     return fallback;
   }
@@ -192,26 +192,31 @@ function setVerdictTone(score, label) {
   verdictPill.classList.add("score-low");
 }
 
+function buildUiSummary(data, finalScore, atsScore) {
+  const role = data.profile?.inferred_role || "Role N/A";
+  return `${role}. Fit ${formatPercent(finalScore)}. ATS ${formatPercent(atsScore)}.`;
+}
+
 function updateHero(role, seniority, overallScore, atsScore) {
   heroElements.score.textContent = formatPercent(overallScore);
-  heroElements.role.textContent = role || "Awaiting analysis";
-  heroElements.seniority.textContent = seniority || "Not inferred";
-  heroElements.ats.textContent = atsScore === null ? "Pending" : formatPercent(atsScore);
+  heroElements.role.textContent = role || "Waiting";
+  heroElements.seniority.textContent = seniority || "N/A";
+  heroElements.ats.textContent = atsScore === null ? "--" : formatPercent(atsScore);
 }
 
 function updateContactInfo(contactInfo = {}) {
-  contactElements.name.textContent = contactInfo.name || "Not detected";
-  contactElements.email.textContent = contactInfo.email || "Not detected";
-  contactElements.phone.textContent = contactInfo.phone || "Not detected";
+  contactElements.name.textContent = contactInfo.name || "N/A";
+  contactElements.email.textContent = contactInfo.email || "N/A";
+  contactElements.phone.textContent = contactInfo.phone || "N/A";
 }
 
 function updateProfile(profile = {}) {
-  profileElements.role.textContent = profile.inferred_role || "Not inferred";
-  profileElements.resumeSeniority.textContent = profile.resume_seniority || "Not inferred";
-  profileElements.jobSeniority.textContent = profile.job_seniority || "Not specified";
-  profileElements.experience.textContent = formatYears(profile.estimated_experience_years, "Not clear");
-  profileElements.required.textContent = formatYears(profile.required_experience_years, "Not specified");
-  profileElements.label.textContent = profile.experience_alignment_label || "No comparison yet";
+  profileElements.role.textContent = profile.inferred_role || "N/A";
+  profileElements.resumeSeniority.textContent = profile.resume_seniority || "N/A";
+  profileElements.jobSeniority.textContent = profile.job_seniority || "N/A";
+  profileElements.experience.textContent = formatYears(profile.estimated_experience_years, "N/A");
+  profileElements.required.textContent = formatYears(profile.required_experience_years, "N/A");
+  profileElements.label.textContent = profile.experience_alignment_label || "N/A";
 }
 
 function renderCategoryScores(scores) {
@@ -221,7 +226,7 @@ function renderCategoryScores(scores) {
   if (!values.length) {
     const empty = document.createElement("div");
     empty.className = "category-row";
-    empty.textContent = "Run a full analysis to see category-based fit scoring.";
+    empty.textContent = "Run analysis.";
     categoryScoreList.appendChild(empty);
     return;
   }
@@ -272,28 +277,27 @@ function renderCategoryScores(scores) {
 }
 
 function clearListsForExtraction() {
-  renderTagList(listElements.jobSkills, [], "Run full analysis to map job skills");
-  renderTagList(listElements.matched, [], "Run full analysis to compare skills");
-  renderTagList(listElements.missing, [], "Run full analysis to reveal missing skills");
-  renderDetailList(listElements.atsStrengths, [], "Run full analysis to generate ATS strengths");
-  renderDetailList(listElements.atsIssues, [], "Run full analysis to generate ATS issues");
-  renderDetailList(listElements.strengths, [], "Run full analysis to see strengths");
-  renderDetailList(listElements.recommendations, [], "Run full analysis to see recommendations");
-  renderDetailList(listElements.priorities, [], "Run full analysis to prioritize improvements");
-  renderDetailList(listElements.risks, [], "Run full analysis to identify risk flags");
-  renderTagList(listElements.overlap, [], "Run full analysis for keyword overlap");
-  renderTagList(listElements.jobKeywords, [], "Run full analysis to compare job keywords");
+  renderTagList(listElements.jobSkills, [], "Run analysis");
+  renderTagList(listElements.matched, [], "Run analysis");
+  renderTagList(listElements.missing, [], "Run analysis");
+  renderDetailList(listElements.atsStrengths, [], "Run analysis");
+  renderDetailList(listElements.atsIssues, [], "Run analysis");
+  renderDetailList(listElements.strengths, [], "Run analysis");
+  renderDetailList(listElements.recommendations, [], "Run analysis");
+  renderDetailList(listElements.priorities, [], "Run analysis");
+  renderDetailList(listElements.risks, [], "Run analysis");
+  renderTagList(listElements.overlap, [], "Run analysis");
+  renderTagList(listElements.jobKeywords, [], "Run analysis");
   renderCategoryScores([]);
 }
 
 function resetResultView() {
   latestAnalysis = null;
-  textElements.summary.textContent =
-    "Run an analysis to generate a recruiter-ready summary, ATS signal, and tailored next steps.";
-  updateHero("Awaiting analysis", "Not inferred", 0, null);
+  textElements.summary.textContent = "Run analysis.";
+  updateHero("Waiting", "N/A", 0, null);
   updateProfile({});
   updateContactInfo({});
-  setVerdictTone(0, "Awaiting input");
+  setVerdictTone(0, "Waiting");
 
   setRingValue(ringElements.final, 0);
   setRingValue(ringElements.skill, 0);
@@ -304,21 +308,21 @@ function resetResultView() {
   setMetricValue(metricElements.experience, 0);
   setMetricValue(metricElements.ats, 0);
 
-  renderTagList(listElements.presentSections, [], "No sections detected yet");
-  renderTagList(listElements.missingSections, [], "Run analysis to detect gaps");
-  renderTagList(listElements.resumeSkills, [], "No resume skills detected yet");
-  renderTagList(listElements.jobSkills, [], "No target skills mapped yet");
-  renderTagList(listElements.matched, [], "No matched skills yet");
-  renderTagList(listElements.missing, [], "No missing skills yet");
-  renderTagList(listElements.overlap, [], "No shared keywords yet");
-  renderTagList(listElements.resumeKeywords, [], "No resume keywords yet");
-  renderTagList(listElements.jobKeywords, [], "No job keywords yet");
-  renderDetailList(listElements.atsStrengths, [], "ATS strengths will appear here");
-  renderDetailList(listElements.atsIssues, [], "ATS issues will appear here");
-  renderDetailList(listElements.strengths, [], "Strengths will appear here");
-  renderDetailList(listElements.recommendations, [], "Recommendations will appear here");
-  renderDetailList(listElements.priorities, [], "Priority actions will appear here");
-  renderDetailList(listElements.risks, [], "Risk flags will appear here");
+  renderTagList(listElements.presentSections, [], "None");
+  renderTagList(listElements.missingSections, [], "None");
+  renderTagList(listElements.resumeSkills, [], "None");
+  renderTagList(listElements.jobSkills, [], "None");
+  renderTagList(listElements.matched, [], "None");
+  renderTagList(listElements.missing, [], "None");
+  renderTagList(listElements.overlap, [], "None");
+  renderTagList(listElements.resumeKeywords, [], "None");
+  renderTagList(listElements.jobKeywords, [], "None");
+  renderDetailList(listElements.atsStrengths, [], "None");
+  renderDetailList(listElements.atsIssues, [], "None");
+  renderDetailList(listElements.strengths, [], "None");
+  renderDetailList(listElements.recommendations, [], "None");
+  renderDetailList(listElements.priorities, [], "None");
+  renderDetailList(listElements.risks, [], "None");
   renderCategoryScores([]);
 }
 
@@ -327,7 +331,7 @@ function renderAnalysis(data) {
   const finalScore = data.scores?.final_score || 0;
   const atsScore = data.ats_analysis?.score || data.scores?.ats_readiness || 0;
 
-  textElements.summary.textContent = data.insights?.summary || "Analysis complete.";
+  textElements.summary.textContent = buildUiSummary(data, finalScore, atsScore);
   updateHero(
     data.profile?.inferred_role,
     data.profile?.resume_seniority,
@@ -337,7 +341,7 @@ function renderAnalysis(data) {
   updateProfile(data.profile);
   updateContactInfo(data.contact_info);
 
-  setVerdictTone(finalScore, data.verdict || "Analysis complete");
+  setVerdictTone(finalScore, data.verdict || "Done");
   setRingValue(ringElements.final, finalScore);
   setRingValue(ringElements.skill, data.scores?.skill_match || 0);
   setRingValue(ringElements.ats, atsScore);
@@ -351,43 +355,43 @@ function renderAnalysis(data) {
   renderTagList(
     listElements.presentSections,
     data.section_analysis?.present_sections,
-    "No resume sections detected",
+    "None",
   );
   renderTagList(
     listElements.missingSections,
     data.section_analysis?.missing_sections,
-    "No major section gaps detected",
+    "None",
   );
   renderDetailList(
     listElements.atsStrengths,
     data.ats_analysis?.strengths,
-    "No ATS strengths generated",
+    "None",
   );
   renderDetailList(
     listElements.atsIssues,
     data.ats_analysis?.issues,
-    "No ATS issues generated",
+    "None",
   );
   renderCategoryScores(data.category_scores);
-  renderTagList(listElements.resumeSkills, data.resume_skills, "No resume skills found");
-  renderTagList(listElements.jobSkills, data.job_skills, "No target skills found");
-  renderTagList(listElements.matched, data.skill_gap?.matched, "No matched skills yet");
-  renderTagList(listElements.missing, data.skill_gap?.missing, "No missing skills");
-  renderDetailList(listElements.strengths, data.insights?.strengths, "No strengths generated");
+  renderTagList(listElements.resumeSkills, data.resume_skills, "None");
+  renderTagList(listElements.jobSkills, data.job_skills, "None");
+  renderTagList(listElements.matched, data.skill_gap?.matched, "None");
+  renderTagList(listElements.missing, data.skill_gap?.missing, "None");
+  renderDetailList(listElements.strengths, data.insights?.strengths, "None");
   renderDetailList(
     listElements.recommendations,
     data.insights?.recommendations,
-    "No recommendations generated",
+    "None",
   );
   renderDetailList(
     listElements.priorities,
     data.insights?.priority_actions,
-    "No priority actions generated",
+    "None",
   );
-  renderDetailList(listElements.risks, data.insights?.risk_flags, "No risk flags detected");
-  renderTagList(listElements.overlap, data.keyword_overlap, "No keyword overlap detected");
-  renderTagList(listElements.resumeKeywords, data.resume_keywords, "No resume keywords found");
-  renderTagList(listElements.jobKeywords, data.job_keywords, "No target keywords found");
+  renderDetailList(listElements.risks, data.insights?.risk_flags, "None");
+  renderTagList(listElements.overlap, data.keyword_overlap, "None");
+  renderTagList(listElements.resumeKeywords, data.resume_keywords, "None");
+  renderTagList(listElements.jobKeywords, data.job_keywords, "None");
 }
 
 function renderExtraction(data) {
@@ -395,9 +399,9 @@ function renderExtraction(data) {
   const sectionScore = Math.min((data.sections_detected?.length || 0) * 17, 100);
   const skillDensityScore = Math.min((data.extracted_skills?.length || 0) * 8, 100);
 
-  textElements.summary.textContent = `Profile extraction complete. Detected ${data.extracted_skills.length} skills, ${
+  textElements.summary.textContent = `Extracted ${data.extracted_skills.length} skills, ${
     data.sections_detected.length
-  } resume sections, and an inferred ${data.inferred_role} trajectory. Run a full analysis to score fit against a job description.`;
+  } sections.`;
 
   updateHero(
     data.inferred_role,
@@ -407,11 +411,11 @@ function renderExtraction(data) {
   );
   updateProfile({
     inferred_role: data.inferred_role,
-    resume_seniority: data.estimated_experience_years ? "Estimated from experience" : "Emerging",
-    job_seniority: "Not specified",
+    resume_seniority: data.estimated_experience_years ? "Estimated" : "Emerging",
+    job_seniority: "N/A",
     estimated_experience_years: data.estimated_experience_years,
     required_experience_years: null,
-    experience_alignment_label: "Full job comparison not run yet",
+    experience_alignment_label: "Run match",
   });
   updateContactInfo(data.contact_info);
 
@@ -425,10 +429,10 @@ function renderExtraction(data) {
   setMetricValue(metricElements.experience, data.estimated_experience_years ? 60 : 30);
   setMetricValue(metricElements.ats, 0);
 
-  renderTagList(listElements.presentSections, data.sections_detected, "No resume sections detected");
-  renderTagList(listElements.missingSections, [], "Run full analysis to see structural gaps");
-  renderTagList(listElements.resumeSkills, data.extracted_skills, "No resume skills found");
-  renderTagList(listElements.resumeKeywords, data.keyword_candidates, "No keyword candidates found");
+  renderTagList(listElements.presentSections, data.sections_detected, "None");
+  renderTagList(listElements.missingSections, [], "Run analysis");
+  renderTagList(listElements.resumeSkills, data.extracted_skills, "None");
+  renderTagList(listElements.resumeKeywords, data.keyword_candidates, "None");
   clearListsForExtraction();
 }
 
@@ -439,10 +443,10 @@ function buildRecruiterSummary(data) {
 
   const lines = [
     data.insights?.summary || data.verdict || "Resume analysis summary",
-    `Role Fit: ${data.profile?.inferred_role || "Not inferred"}`,
-    `Seniority: ${data.profile?.resume_seniority || "Not inferred"} vs ${data.profile?.job_seniority || "Not specified"}`,
-    `Overall Fit: ${formatPercent(data.scores?.final_score || 0)}`,
-    `ATS Readiness: ${formatPercent(data.ats_analysis?.score || data.scores?.ats_readiness || 0)}`,
+    `Role: ${data.profile?.inferred_role || "N/A"}`,
+    `Level: ${data.profile?.resume_seniority || "N/A"} vs ${data.profile?.job_seniority || "N/A"}`,
+    `Fit: ${formatPercent(data.scores?.final_score || 0)}`,
+    `ATS: ${formatPercent(data.ats_analysis?.score || data.scores?.ats_readiness || 0)}`,
   ];
 
   if (Array.isArray(data.insights?.strengths) && data.insights.strengths.length) {
@@ -450,7 +454,7 @@ function buildRecruiterSummary(data) {
   }
 
   if (Array.isArray(data.insights?.priority_actions) && data.insights.priority_actions.length) {
-    lines.push(`Priority Actions: ${data.insights.priority_actions.slice(0, 3).join(" | ")}`);
+    lines.push(`Priority: ${data.insights.priority_actions.slice(0, 3).join(" | ")}`);
   }
 
   return lines.join("\n");
@@ -458,16 +462,16 @@ function buildRecruiterSummary(data) {
 
 async function copyRecruiterSummary() {
   if (!latestAnalysis) {
-    setStatus("Run a full analysis before copying the recruiter summary.");
+    setStatus("Run analysis first.");
     return;
   }
 
   const summary = buildRecruiterSummary(latestAnalysis);
   try {
     await navigator.clipboard.writeText(summary);
-    setStatus("Recruiter summary copied to clipboard.");
+    setStatus("Copied.");
   } catch (error) {
-    setStatus("Clipboard access failed. Try again after allowing clipboard permissions.");
+    setStatus("Copy failed.");
   }
 }
 
@@ -507,19 +511,19 @@ async function uploadForText(file) {
 
 async function handleAnalyze() {
   if (!resumeInput.value.trim() || !jobInput.value.trim()) {
-    setStatus("Add both resume text and a job description before analyzing.");
+    setStatus("Add resume + job.");
     return;
   }
 
   try {
     setLoading(true);
-    setStatus("Running advanced fit analysis...");
+    setStatus("Analyzing...");
     const data = await postJson("/analyze", {
       resume_text: resumeInput.value,
       job_description: jobInput.value,
     });
     renderAnalysis(data);
-    setStatus("Advanced analysis complete.");
+    setStatus("Done.");
   } catch (error) {
     setStatus(error.message);
   } finally {
@@ -529,18 +533,18 @@ async function handleAnalyze() {
 
 async function handleExtract() {
   if (!resumeInput.value.trim()) {
-    setStatus("Paste resume text before extracting the profile.");
+    setStatus("Add resume.");
     return;
   }
 
   try {
     setLoading(true);
-    setStatus("Extracting resume profile...");
+    setStatus("Extracting...");
     const data = await postJson("/extract-skills", {
       text: resumeInput.value,
     });
     renderExtraction(data);
-    setStatus("Resume profile extracted.");
+    setStatus("Extracted.");
   } catch (error) {
     setStatus(error.message);
   } finally {
@@ -553,7 +557,7 @@ async function handleAnalyzeFiles() {
   const jobFile = jobFileInput.files?.[0];
 
   if (!resumeFile || !jobFile) {
-    setStatus("Choose both a resume file and a job description file before running file analysis.");
+    setStatus("Choose both files.");
     return;
   }
 
@@ -567,13 +571,13 @@ async function handleAnalyzeFiles() {
       extractedFileCache.resume?.signature === resumeSignature &&
       extractedFileCache.job?.signature === jobSignature
     ) {
-      setStatus("Analyzing cached extracted content...");
+      setStatus("Analyzing...");
       data = await postJson("/analyze", {
         resume_text: extractedFileCache.resume.text,
         job_description: extractedFileCache.job.text,
       });
     } else {
-      setStatus("Analyzing uploaded files...");
+      setStatus("Analyzing files...");
       const formData = new FormData();
       formData.append("resume_file", resumeFile);
       formData.append("job_file", jobFile);
@@ -585,7 +589,7 @@ async function handleAnalyzeFiles() {
 
       if (!response.ok) {
         const errorPayload = await response.json().catch(() => ({}));
-        const detail = errorPayload.detail || "Uploaded file analysis failed.";
+        const detail = errorPayload.detail || "File analysis failed.";
         throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
       }
 
@@ -593,7 +597,7 @@ async function handleAnalyzeFiles() {
     }
 
     renderAnalysis(data);
-    setStatus("Uploaded file analysis complete.");
+    setStatus("Done.");
   } catch (error) {
     setStatus(error.message);
   } finally {
@@ -604,7 +608,7 @@ async function handleAnalyzeFiles() {
 async function loadSample() {
   try {
     setLoading(true);
-    setStatus("Loading advanced sample scenario...");
+    setStatus("Loading sample...");
     const response = await fetch("/samples");
     if (!response.ok) {
       throw new Error("Unable to load sample content.");
@@ -615,7 +619,7 @@ async function loadSample() {
     jobInput.value = data.job_description || "";
     extractedFileCache.resume = null;
     extractedFileCache.job = null;
-    setStatus("Sample loaded. Running analysis...");
+    setStatus("Loaded. Analyzing...");
     await handleAnalyze();
   } catch (error) {
     setStatus(error.message);
@@ -635,18 +639,18 @@ async function handleFileSelection(input, targetTextArea, nameNode, label) {
   try {
     setLoading(true);
     nameNode.textContent = selectedFile.name;
-    setStatus(`Extracting text from ${label.toLowerCase()} file...`);
+    setStatus(`Extracting ${label.toLowerCase()}...`);
     const data = await uploadForText(selectedFile);
     targetTextArea.value = data.extracted_text;
     extractedFileCache[cacheKey] = {
       signature: buildFileSignature(selectedFile),
       text: data.extracted_text,
     };
-    nameNode.textContent = `${selectedFile.name} - ${data.char_count} chars extracted`;
-    setStatus(`${label} file loaded into the analyzer.`);
+    nameNode.textContent = `${selectedFile.name} - ${data.char_count} chars`;
+    setStatus("Loaded.");
   } catch (error) {
     extractedFileCache[cacheKey] = null;
-    nameNode.textContent = "Supports TXT, DOCX, and PDF";
+    nameNode.textContent = cacheKey === "resume" ? "TXT/DOCX/PDF" : "Upload JD";
     setStatus(error.message);
   } finally {
     setLoading(false);
@@ -658,12 +662,12 @@ function resetWorkspace() {
   jobInput.value = "";
   resumeFileInput.value = "";
   jobFileInput.value = "";
-  resumeFileName.textContent = "Supports TXT, DOCX, and PDF";
-  jobFileName.textContent = "Upload a JD file to auto-fill the target role text";
+  resumeFileName.textContent = "TXT/DOCX/PDF";
+  jobFileName.textContent = "Upload JD";
   extractedFileCache.resume = null;
   extractedFileCache.job = null;
   resetResultView();
-  setStatus("Workspace reset. Ready for a new analysis.");
+  setStatus("Reset.");
 }
 
 function attachTiltEffects() {
@@ -701,7 +705,7 @@ resumeFileInput.addEventListener("change", () =>
   handleFileSelection(resumeFileInput, resumeInput, resumeFileName, "Resume"),
 );
 jobFileInput.addEventListener("change", () =>
-  handleFileSelection(jobFileInput, jobInput, jobFileName, "Job description"),
+  handleFileSelection(jobFileInput, jobInput, jobFileName, "Job"),
 );
 
 resetResultView();
