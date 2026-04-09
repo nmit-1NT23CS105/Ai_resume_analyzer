@@ -8,7 +8,7 @@ import zipfile
 
 from fastapi.testclient import TestClient
 
-from app.core.analyzer import analyze_resume, extract_skills
+from app.core.analyzer import RESUME_SECTION_ALIASES, analyze_resume, detect_sections, estimate_experience_years, extract_skills
 from app.main import app
 
 
@@ -56,6 +56,50 @@ class ResumeAnalyzerTests(unittest.TestCase):
         self.assertIn("FastAPI", extracted)
         self.assertIn("SQL", extracted)
         self.assertIn("Docker", extracted)
+
+    def test_skill_extraction_handles_modern_aliases(self) -> None:
+        text = "Built a Next.js UI with Tailwind CSS, GraphQL APIs, RAG, Hugging Face Transformers, and Terraform."
+        extracted = extract_skills(text)
+
+        self.assertIn("Next.js", extracted)
+        self.assertIn("Tailwind CSS", extracted)
+        self.assertIn("GraphQL", extracted)
+        self.assertIn("RAG", extracted)
+        self.assertIn("Hugging Face", extracted)
+        self.assertIn("Transformers", extracted)
+        self.assertIn("Terraform", extracted)
+
+    def test_preferred_skills_are_weighted_below_required_skills(self) -> None:
+        resume = "Python FastAPI SQL engineer with production backend API experience."
+        required_job = "Requirements\nPython, FastAPI, SQL, Kubernetes."
+        preferred_job = "Requirements\nPython, FastAPI, SQL.\nPreferred\nKubernetes."
+
+        required_result = analyze_resume(resume, required_job)
+        preferred_result = analyze_resume(resume, preferred_job)
+
+        self.assertLess(required_result["scores"]["skill_match"], preferred_result["scores"]["skill_match"])
+        self.assertGreaterEqual(preferred_result["scores"]["skill_match"], 85)
+
+    def test_experience_estimation_merges_role_ranges(self) -> None:
+        text = "Engineer | 2020 - 2022\nSenior Engineer | 2022 - 2024"
+
+        self.assertEqual(estimate_experience_years(text), 4.0)
+
+    def test_job_year_range_uses_minimum_required_years(self) -> None:
+        resume = "Python FastAPI engineer with 3+ years of API delivery experience."
+        job = "Requirements\n3-5 years of Python and FastAPI backend API experience."
+
+        result = analyze_resume(resume, job)
+
+        self.assertEqual(result["profile"]["required_experience_years"], 3.0)
+
+    def test_section_detection_handles_markdown_headings(self) -> None:
+        text = "## Technical Skills: Python, FastAPI, SQL\n### Professional Experience\nBuilt APIs."
+
+        sections = detect_sections(text, RESUME_SECTION_ALIASES)
+
+        self.assertIn("Skills", sections)
+        self.assertIn("Experience", sections)
 
     def test_analyze_resume_returns_positive_match(self) -> None:
         resume = "Python NLP developer with FastAPI, SQL, Docker, Git, and REST API experience."

@@ -6,6 +6,21 @@ import math
 import re
 from collections import Counter
 
+UNICODE_TRANSLATION = str.maketrans(
+    {
+        "\u00a0": " ",
+        "\u2010": "-",
+        "\u2011": "-",
+        "\u2012": "-",
+        "\u2013": "-",
+        "\u2014": "-",
+        "\u2212": "-",
+        "\u2022": "-",
+        "\u25e6": "-",
+        "\u00b7": "-",
+    }
+)
+
 STOP_WORDS = {
     "a",
     "an",
@@ -52,12 +67,62 @@ STOP_WORDS = {
     "job",
     "description",
     "requirements",
+    "required",
+    "preferred",
+    "responsibilities",
+    "responsibility",
+    "overview",
+    "qualification",
+    "qualifications",
+    "summary",
+    "professional",
 }
 
 IMPORTANT_SHORT_TOKENS = {"ai", "ml", "nlp", "sql", "aws", "api", "etl", "cv"}
 TOKEN_PATTERN = re.compile(r"[a-zA-Z][a-zA-Z0-9+#.\-/]{1,}")
 EMAIL_PATTERN = re.compile(r"[\w.\-+]+@[\w.\-]+\.\w+")
 PHONE_PATTERN = re.compile(r"(?:\+?\d{1,3}[\s\-]?)?(?:\(?\d{3}\)?[\s\-]?)?\d{3}[\s\-]?\d{4}")
+TOKEN_NORMALIZATION_MAP = {
+    "apis": "api",
+    "restful": "rest",
+    "databases": "database",
+    "pipelines": "pipeline",
+    "resumes": "resume",
+    "screens": "screen",
+    "screening": "screen",
+    "recruiters": "recruiter",
+    "workflows": "workflow",
+    "services": "service",
+    "engineers": "engineer",
+    "models": "model",
+    "dashboards": "dashboard",
+    "stakeholders": "stakeholder",
+}
+KEYWORD_PHRASE_ALLOWLIST = {
+    "api endpoint",
+    "candidate screen",
+    "cosine similarity",
+    "data analysis",
+    "data pipeline",
+    "data visualization",
+    "deep learning",
+    "github actions",
+    "machine learning",
+    "natural language",
+    "natural language processing",
+    "openai api",
+    "problem solving",
+    "rest api",
+    "resume parsing",
+    "sql database",
+    "stakeholder communication",
+    "unit testing",
+    "vector database",
+}
+
+
+def normalize_text(text: str) -> str:
+    return text.translate(UNICODE_TRANSLATION)
 
 
 def compact_whitespace(text: str) -> str:
@@ -65,12 +130,15 @@ def compact_whitespace(text: str) -> str:
 
 
 def normalize_token(token: str) -> str:
-    return token.lower().replace(".", "").replace("-", "")
+    normalized = token.lower().strip("'\"`")
+    normalized = normalized.replace(".", "").replace("-", "")
+    normalized = TOKEN_NORMALIZATION_MAP.get(normalized, normalized)
+    return normalized
 
 
 def tokenize(text: str) -> list[str]:
     tokens: list[str] = []
-    for raw_token in TOKEN_PATTERN.findall(text.lower()):
+    for raw_token in TOKEN_PATTERN.findall(normalize_text(text).lower()):
         token = normalize_token(raw_token)
         if token in STOP_WORDS:
             continue
@@ -112,19 +180,46 @@ def cosine_similarity(text_a: str, text_b: str) -> float:
 
 
 def top_keywords(text: str, limit: int = 10) -> list[str]:
-    counts = term_frequency(tokenize(text))
+    counts = _keyword_frequency(text)
     return [keyword for keyword, _ in counts.most_common(limit)]
 
 
 def shared_keywords(text_a: str, text_b: str, limit: int = 10) -> list[str]:
-    counts_a = term_frequency(tokenize(text_a))
-    counts_b = term_frequency(tokenize(text_b))
+    counts_a = _keyword_frequency(text_a)
+    counts_b = _keyword_frequency(text_b)
     overlap = [
         (keyword, counts_a[keyword] + counts_b[keyword])
         for keyword in set(counts_a) & set(counts_b)
     ]
     overlap.sort(key=lambda item: (-item[1], item[0]))
     return [keyword for keyword, _ in overlap[:limit]]
+
+
+def _keyword_frequency(text: str) -> Counter[str]:
+    tokens = tokenize(text)
+    counts = term_frequency(tokens)
+
+    for phrase in _iter_keyword_phrases(tokens, size=2):
+        counts[phrase] += 2
+    for phrase in _iter_keyword_phrases(tokens, size=3):
+        counts[phrase] += 3
+
+    return counts
+
+
+def _iter_keyword_phrases(tokens: list[str], size: int) -> list[str]:
+    if len(tokens) < size:
+        return []
+
+    phrases: list[str] = []
+    for index in range(len(tokens) - size + 1):
+        window = tokens[index : index + size]
+        if len(set(window)) < size:
+            continue
+        if " ".join(window) in KEYWORD_PHRASE_ALLOWLIST:
+            phrases.append(" ".join(window))
+
+    return phrases
 
 
 def extract_contact_info(text: str) -> dict[str, str | None]:
@@ -146,4 +241,3 @@ def extract_contact_info(text: str) -> dict[str, str | None]:
         "email": email_match.group(0) if email_match else None,
         "phone": phone_match.group(0) if phone_match else None,
     }
-

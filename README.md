@@ -6,6 +6,7 @@ Python + NLP project that analyzes resumes, extracts skills, and compares them a
 
 - Advanced resume skill extraction using a curated NLP-style skill catalog
 - Job description matching with matched, missing, and additional skills
+- Weighted matching that prioritizes required skills above preferred skills
 - Multi-factor scoring across skill fit, semantic similarity, keyword alignment, section coverage, experience fit, and ATS readiness
 - Role inference, seniority estimation, category-based skill coverage, and recruiter-style recommendations
 - FastAPI endpoints for skill extraction, file parsing, and advanced resume analysis
@@ -140,9 +141,12 @@ Use these Render settings:
 
 ## How Scoring Works
 
-- `skill_match`: percentage of job skills found in the resume
-- `document_similarity`: cosine similarity between the resume text and the job description
-- `final_score`: weighted combination of skill match and document similarity
+- `skill_match`: weighted job-skill coverage, with Requirements weighted higher than Preferred skills
+- `document_similarity`: TF-IDF-style cosine similarity between resume and job text
+- `keyword_alignment`: overlap across normalized keywords and high-value technical phrases
+- `experience_alignment`: compares resume years/seniority against required years and role level
+- `ats_readiness`: checks contact info, sections, keyword fit, measurable impact, bullets, and action verbs
+- `final_score`: weighted blend led by skill match, then similarity, keywords, sections, experience, and ATS quality
 
 ## Notes
 
